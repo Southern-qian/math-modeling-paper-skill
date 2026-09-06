@@ -10,7 +10,8 @@ math-modeling-paper/
 ├── references/
 │   ├── workflow.md           # 九阶段详细操作手册（含命令与代码片段）
 │   ├── pitfalls.md           # 24 条实战踩坑清单（量纲/LaTeX/数值一致性/流程）
-│   └── gpt-guide.md          # GPT 版写文思路与技巧（可整段粘贴给任意 LLM）
+│   ├── gpt-guide.md          # GPT 版写文思路与技巧（可整段粘贴给任意 LLM）
+│   └── self-check.md         # 人工验收清单（25 条，A/B/C 三档 + 评分表）
 └── assets/
     └── paper-template.tex    # 国赛格式 LaTeX 骨架（Tectonic 直接编译）
 ```
@@ -19,7 +20,7 @@ math-modeling-paper/
 
 **用法 A：ZCode 技能** — 把整个目录放到 `~/.agents/skills/math-modeling-paper`，ZCode 会在你说"写数模论文/做 X 题完整解答"时自动加载。
 
-**用法 B：任意 LLM（GPT/Claude 等）** — 打开 `references/gpt-guide.md`，把【系统提示】整段粘贴给模型，再按文末格式提供赛题与数据。核心纪律：**分阶段推进，数值表确认前不许写正文**。
+**用法 B：任意 LLM（GPT/Claude 等）** — 打开 `references/gpt-guide.md`，把【系统提示】整段粘贴给模型，再按文末格式提供赛题与数据。核心纪律：**分阶段推进，数值表确认前不许写正文；每阶段输出五段式交接摘要；tex+图打包走 Overleaf（XeLaTeX）编译；成品按 `self-check.md` 25 条清单人工验收**。
 
 ## 核心理念
 
