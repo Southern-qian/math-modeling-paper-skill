@@ -1,0 +1,115 @@
+% ============================================================
+% 国赛格式 LaTeX 骨架（配套 math-modeling-paper 技能）
+% 编译：tectonic main.tex（Tectonic 会自动下载 fandol 字体与宏包）
+% ============================================================
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm} % 左右必须对称
+\usepackage{booktabs}
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}   % 左对齐自适应列，防 underfull
+\usepackage{adjustbox}
+\usepackage{xurl}                                    % URL 可在斜杠处断行
+\usepackage{needspace}                               % 防小节标题孤悬页底
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{listings}                                % 代码附录
+\lstset{basicstyle=\tiny\ttfamily, numbers=left, numberstyle=\tiny\color{gray},
+  breaklines=true, frame=single, framerule=0.3pt, columns=flexible, language=Python}
+\usepackage[numbers,super,sort&compress]{natbib}     % 上标引用
+\widowpenalty=10000
+\clubpenalty=10000
+
+\usepackage[colorlinks=true, linkcolor=blue!60!black, citecolor=blue!60!black,
+            urlcolor=blue!60!black, bookmarks=true, bookmarksnumbered=true,
+            unicode=true]{hyperref}                  % 永远最后加载
+\hypersetup{
+    pdftitle={论文标题}, pdfauthor={作者}, pdfsubject={竞赛题号},
+    pdfkeywords={关键词1, 关键词2}}
+
+\newcommand{\um}{\,\mu\mathrm{m}}
+
+\begin{document}
+
+% ---------- 第 1 页：标题 + 摘要 + 关键词（国赛格式：无封面无目录） ----------
+\begin{center}
+    {\zihao{3}\heiti 论文标题（可两行）}
+\end{center}
+
+\begin{center}
+    {\zihao{4}\heiti 摘\quad 要}
+\end{center}
+
+本文针对……问题，建立了……模型，设计了……算法。（总起段：对象-方法-结论一句话）
+
+\textbf{针对问题一}，我们……（方法一句话）。……（推导要点）。得到……（数值结论）。
+
+\textbf{针对问题二}，我们设计了……算法：……（一句话机理）。对附件 1、2 的结果为
+$d=7.20\pm0.09\um$（95\% 置信区间 $[7.01,7.38]\um$）。
+% ↑ 摘要里每个结论必须带数值，且与正文/表格完全一致
+
+\textbf{针对问题三}，……判定 + 建模 + 数值 + 复核……
+
+\vspace{0.6em}
+\noindent{\heiti 关键词：}关键词一；关键词二；\mbox{最后一个关键词}  % \mbox 防拆行
+
+\newpage
+
+\section{问题重述}
+% 用（1）（2）（3）列出每问要求，忠于原文措辞
+
+\section{问题背景与研究现状}
+% 行业背景一段 + 方法学四条主线各一段（极值法/频域法/包络法/全谱拟合法）+ 开源实践现状
+
+\section{问题分析}
+% 每问一小节：候选方案对比表（优点/缺点/本文取舍）——评审最看重"为什么这么做"
+
+\section{模型假设}
+\begin{enumerate}[label=\textbf{假设\arabic*：}, leftmargin=3.6em]
+    \item ……。\emph{依据}：…… % 每条假设必须带物理依据
+\end{enumerate}
+
+\section{符号说明}
+% booktabs 三线表：符号 | 含义 | 单位/取值
+
+\section{问题一：模型的建立}
+% 从物理基本关系推导；关键公式 \label 供后文 \eqref 引用
+
+\section{问题二：算法设计与求解}
+% 预处理 → 特征提取 → 主算法（TikZ 流程图，≤6 节点）→ 交叉验证方法×2
+% → 结果汇总表 → 可靠性（双数据互证/Bootstrap/灵敏度/蒙特卡洛）
+
+\section{问题三：……}
+% 判定（定量判据）→ 建模 → 算法（全局优化+局部精修，收敛曲线图）→ 结果 → 对照 → 复核
+
+\section{与开源实现的系统对照}
+% 表：各实现 | 物理模型 | 算法 | 报告数值；讨论方法间系统离散的归因
+
+\section{灵敏度与稳健性检验}\label{sec:sens}
+% 对数微分传递公式 + 数值扰动表 + 蒙特卡洛直方图
+
+\section{模型评价与推广}
+% 优点（对应创新点）/ 不足（诚实量化方法间离散）/ 推广
+
+\begin{thebibliography}{99}
+    \raggedright
+    \setlength{\itemsep}{0.15em}
+    \small
+    \bibitem{ref1} 作者. 题名[J]. 刊名, 年, 卷(期): 页码. DOI: xxx.
+    % 每条文献写进论文前必须在 Crossref 核验过
+\end{thebibliography}
+
+\newpage
+\appendix
+\section{附录：Python 关键代码}
+\begin{lstlisting}
+# 核心算法代码（能跑通的最小集）
+\end{lstlisting}
+
+\end{document}
