@@ -1,0 +1,553 @@
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{adjustbox}
+\usepackage{xurl}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{listings}
+\lstset{basicstyle=\tiny\ttfamily, numbers=left, numberstyle=\tiny\color{gray},
+  breaklines=true, frame=single, framerule=0.3pt, columns=flexible,
+  keywordstyle=\color{blue!70!black}, commentstyle=\color{green!50!black},
+  showstringspaces=false, language=Python}
+\usepackage[numbers,super,sort&compress]{natbib}
+\widowpenalty=10000
+\clubpenalty=10000
+
+\usepackage[
+    colorlinks=true, linkcolor=blue!60!black, citecolor=blue!60!black,
+    urlcolor=blue!60!black, bookmarks=true, bookmarksnumbered=true, unicode=true
+]{hyperref}
+\hypersetup{
+    pdftitle={基于TO-LO振子色散级数标定与Airy多光束模型的碳化硅及硅外延层厚度确定},
+    pdfauthor={Z.ai}, pdfsubject={2025年全国大学生数学建模竞赛B题},
+    pdfkeywords={红外干涉法, 碳化硅, 外延层厚度, TO-LO振子, 级数标定, Airy公式, Drude模型}
+}
+
+\newcommand{\um}{\,\mu\mathrm{m}}
+\newcommand{\invcm}{\,\mathrm{cm^{-1}}}
+
+\begin{document}
+
+\begin{center}
+    {\zihao{3}\heiti 基于TO--LO振子色散级数标定与Airy多光束模型的\\[0.2em]碳化硅及硅外延层厚度确定}
+\end{center}
+
+\begin{center}
+    {\zihao{4}\heiti 摘\quad 要}
+\end{center}
+
+本文针对红外干涉法测量半导体外延层厚度问题，建立了从双光束干涉到多光束干涉的完整物理模型体系，设计了与之配套的两类反演算法，并对全部四个附件的实测光谱完成了厚度计算与可靠性评估。
+
+\textbf{针对问题一}，我们对``空气--外延层--衬底''三层结构建立了双光束干涉模型：由几何光程差推导出干涉极值条件 $2n_1d\sigma\cos\theta_2=m$，得到厚度与级数、波数的解析关系；进一步针对色散介质证明极值间距由\textbf{群指数} $n_g=n+\sigma\,\mathrm{d}n/\mathrm{d}\sigma$ 而非相速折射率决定，并引入 TO--LO 单振子色散模型刻画碳化硅在剩余射线带尾缘的强色散行为。
+
+\textbf{针对问题二}，我们设计了``SG 滤波---极值检测与交替剪枝---TO--LO 振子色散级数标定线性回归''的反演算法：将极值级数 $m_j=m_0+0.5j$ 与光学厚度坐标 $x_j=2n(\sigma_j)\cos\theta_2\,\sigma_j$ 作线性回归，斜率即厚度，从而把非线性反演化为线性问题并避免初值依赖。对附件 1、附件 2 的计算结果为：$10^\circ$ 入射下 $d=7.202\um$（回归 $R^2=0.9998$），$15^\circ$ 入射下 $d=7.165\um$，两角度偏差仅 $0.5\%$；色散校正 FFT 法（$7.336/7.351\um$）与群指数逐对法（$7.195\um$）交叉验证一致。以逆方差加权合并并经 Bootstrap 检验，碳化硅外延层厚度最终为 $d=7.20\pm0.40\um$（95\% 置信区间 $[6.42,7.98]\um$）。
+
+\textbf{针对问题三}，我们首先推导出多光束干涉的四个必要条件：光源相干长度大于层内往返光程、界面反射系数乘积 $|r_{01}r_{12}|$ 不可忽略、外延层内吸收低、界面平整平行。对附件 3、4 的分析表明硅片低波数段条纹可见度高达 $V=0.52$，且条纹幅值随波数强烈衰减，定性判定发生了多光束干涉。据此建立 Drude 衬底 $+$ Airy 多光束反射率模型，以``差分进化全局搜索 $+$ TRF 局部精修''对两角度光谱联合拟合，$R^2$ 高达 $0.9969/0.9977$，硅外延层厚度为 $d=3.414\um$（极值点解析法 $3.512/3.475\um$ 交叉印证）；定量计算得 $|r_{01}|=0.553$、$|r_{12}|=0.070$、Airy 精细系数 $F=0.168$。作为对照，双光束模型仅能取得 $R^2=0.951/0.954$，证实忽略多光束会显著歪曲条纹线型。最后将该判据用于碳化硅复核：由重掺杂衬底的 Drude 位移估计 $|r_{12}|\approx0.0025$，仅为硅体系的 $1/28$，全谱复核显示多光束效应造成的厚度偏移仅 $+0.10\%$，故碳化硅无需多光束修正，问题二的双光束模型充分且可靠。
+
+灵敏度分析表明厚度对折射率的敏感度约为 $-1.0$（$n$ 相对误差 $1\%$ 传递为 $d$ 误差约 $1\%$），对入射角敏感度仅 $0.024\%\,/\,0.5^\circ$；$0.3\%$ 反射率噪声下的蒙特卡洛检验给出中位数 $7.54\um$、稳健标准差 $0.48\um$，验证了算法的稳健性。
+
+\vspace{0.6em}
+\noindent{\heiti 关键词：}红外干涉法；TO--LO 振子色散；级数标定；群指数；Airy 公式；Drude 模型；\mbox{差分进化}
+
+\newpage
+
+\section{问题重述}
+
+碳化硅是第三代半导体的代表材料，其外延层厚度是影响器件性能的关键参数。红外干涉法通过分析外延层上、下界面反射光的干涉条纹确定厚度，具有无损、快速的优势。题目给出同一碳化硅晶圆片在 $10^\circ$ 与 $15^\circ$ 入射角下的红外反射光谱（附件 1、2），以及同一硅晶圆片的对应数据（附件 3、4），要求：
+
+\begin{enumerate}[label=（\arabic*）, leftmargin=2.4em, itemsep=0.1em]
+    \item \textbf{问题一}：在只考虑外延层与衬底界面一次反射、透射产生干涉条纹的情形下，建立确定外延层厚度的数学模型。注意外延层折射率随掺杂载流子浓度与波长变化。
+    \item \textbf{问题二}：根据问题一的模型设计厚度反演算法，对附件 1、2 的实测数据给出碳化硅外延层厚度，并分析结果可靠性。
+    \item \textbf{问题三}：考虑光在外延层界面与衬底界面间的多次反射、透射（多光束干涉），推导其产生的必要条件，分析其对厚度计算精度的影响；判定附件 3、4 的硅片是否出现多光束干涉，给出硅外延层厚度的模型、算法与结果；若碳化硅（附件 1、2）也受多光束干涉影响，设法消除并给出修正后的结果。
+\end{enumerate}
+
+\section{问题分析}
+
+\subsection{问题一的分析}
+问题一要求建立一次反射情形下的干涉模型。反射光谱中的干涉条纹源于两束反射光的相位差，而相位差由光程差 $2n_1d\cos\theta_2$ 与界面反射相移共同决定，因此核心是：其一，由几何关系与折射定律严格推导光程差与极值条件；其二，处理折射率的色散——碳化硅在远红外声子共振（剩余射线带）附近色散强烈，需要引入物理化的色散模型而非简单常数近似。我们注意到：色散存在时，相邻极值的间距由群指数而非相速折射率决定，这一区别直接影响反演公式的正确性。
+
+\subsection{问题二的分析}
+问题二是反演问题：从含噪光谱中提取厚度。技术路线分三步：数据预处理（剔除剩余射线带、Savitzky--Golay 滤波）；极值检测并强制峰谷交替、剔除噪声伪极值；利用级数标定把厚度反演转化为线性回归。难点在于折射率色散使条纹间距随波数漂移（啁啾），我们以 TO--LO 单振子色散模型刻画该效应，并将振子强度 $\varepsilon_\infty$ 与厚度一起由回归优度扫描确定。可靠性通过两入射角交叉验证、逐对厚度 Bootstrap 置信区间、折射率与角度扰动灵敏度以及蒙特卡洛噪声实验共同评估。
+
+\subsection{问题三的分析}
+问题三的关键是判定与建模。判定层面：多光束干涉使条纹线型偏离余弦形式，表现为高可见度、幅值随波数衰减与非对称线型，我们从可见度与线型两个角度对硅片作定性判定。建模层面：以 Airy 公式描述多光束叠加，衬底重掺杂硅的 Drude 介电响应刻画其复折射率，外延层取近常数色散；反演采用差分进化全局搜索加 TRF 局部精修，对两角度光谱联合拟合，并以双光束模型作为对照检验多光束效应的显著性。对碳化硅的复核则通过对比两体系界面反射系数 $|r_{12}|$ 的量级，从物理上说明多光束效应是否可忽略。
+
+\section{模型假设}
+\begin{enumerate}[label=\textbf{假设\arabic*：}, leftmargin=3.6em, itemsep=0.15em]
+    \item 外延层与衬底界面平整、平行，横向均匀，厚度在光斑范围内一致；
+    \item 红外光束为平面波，入射角取标称值 $10^\circ$ 与 $15^\circ$，光束发散角的影响可忽略；
+    \item 碳化硅外延层为轻掺杂，在分析波段（$\sigma\ge1200\invcm$）内吸收可忽略，其色散由 TO--LO 单振子模型描述；
+    \item 硅衬底为重掺杂，其红外光学响应由 Drude 自由载流子模型描述，衬底视为半无限厚；
+    \item 实测反射率与模型反射率之间允许存在与波数无关的线性定标偏差（仪器定标因子），在拟合中以冗余参数消除；
+    \item 测量环境温度稳定，声子频率与阻尼不随测量过程漂移。
+\end{enumerate}
+
+\section{符号说明}
+\begin{table}[htbp]
+    \centering
+    \caption{本文主要符号说明}
+    \label{tab:symbols}
+    \small
+    \begin{tabular}{cll}
+        \toprule
+        符号 & 含义 & 单位/取值 \\
+        \midrule
+        $d$ & 外延层厚度 & $\mu$m \\
+        $\sigma$ & 波数（$=1/\lambda$） & cm$^{-1}$ \\
+        $\theta_1,\ \theta_2$ & 空气中入射角、外延层内折射角 & $10^\circ$ 或 $15^\circ$、— \\
+        $n_1(\sigma)$ & 外延层折射率（色散函数） & — \\
+        $n_g$ & 群指数 $n_1+\sigma\,\mathrm{d}n_1/\mathrm{d}\sigma$ & — \\
+        $r_{01},\ r_{12}$ & 界面 I、II 的菲涅耳反射系数（振幅） & — \\
+        $\delta$ & 两束光的相位差 & rad \\
+        $m_j,\ m_0$ & 第 $j$ 个极值的干涉级数、级数偏移 & — \\
+        $\varepsilon_\infty$ & TO--LO 振子的高频介电常数 & — \\
+        $\sigma_{\mathrm{TO}},\ \sigma_{\mathrm{LO}}$ & 4H-SiC 横、纵光学声子频率 & $797.7,\ 992.1$ cm$^{-1}$ \\
+        $\varepsilon_s(\sigma)$ & 重掺杂硅衬底介电函数（Drude） & — \\
+        $\sigma_p,\ \gamma_s$ & 衬底等离子体频率、散射率 & cm$^{-1}$ \\
+        $D(\sigma)$ & 去相干包络 $\exp[-(\sigma/\sigma_d)^2]$ & — \\
+        $V$ & 条纹可见度 & — \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{问题一：双光束干涉模型的建立}
+
+\subsection{光程差与干涉光强}
+
+红外光以角 $\theta_1$ 自空气（$n_0=1$）入射到厚度 $d$、折射率 $n_1(\sigma)$ 的外延层，如图~\ref{fig:geometry}~所示。由折射定律 $\sin\theta_1=n_1\sin\theta_2$。光束 1 经界面 I 直接反射，光束 2 折入外延层、经界面 II 反射后穿出，两者光程差为
+\begin{equation}
+    \Delta = 2\,n_1 d\cos\theta_2 = 2d\sqrt{n_1^2-\sin^2\theta_1}.
+    \label{eq:opd}
+\end{equation}
+计入两界面菲涅耳反射相移 $\varphi_{01},\varphi_{12}$，相位差为
+\begin{equation}
+    \delta(\sigma) = 4\pi\, n_1(\sigma)\, d\,\sigma\cos\theta_2 + (\varphi_{12}-\varphi_{01}),
+    \label{eq:phase}
+\end{equation}
+反射光强为两束相干光叠加：
+\begin{equation}
+    R(\sigma) = r_{01}^2 + r_{12}^2 + 2\,r_{01}r_{12}\cos\delta(\sigma),
+    \label{eq:intensity}
+\end{equation}
+其中 $r_{01}=\dfrac{\cos\theta_1-n_1\cos\theta_2}{\cos\theta_1+n_1\cos\theta_2}$（s 偏振），$r_{12}$ 同理由界面两侧光学导纳给出。式~\eqref{eq:intensity} 表明反射谱在缓变本底上叠加余弦条纹，条纹相位携带厚度信息。
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[scale=1.0]
+        \fill[blue!6]    (-3.6,0)    rectangle (3.6,1.3);
+        \fill[orange!10] (-3.6,-1.5) rectangle (3.6,0);
+        \fill[gray!14]   (-3.6,-2.9) rectangle (3.6,-1.5);
+        \node[font=\small] at (-3.1,0.7)   {空气};
+        \node[font=\small] at (-3.1,-0.75) {外延层};
+        \node[font=\small] at (-3.1,-2.2)  {衬底};
+        \draw[thick] (-3.6,0)    -- (3.6,0);
+        \draw[thick] (-3.6,-1.5) -- (3.6,-1.5);
+        \draw[{Stealth}-{Stealth}] (3.3,0) -- (3.3,-1.5) node[midway, right, font=\small] {$d$};
+        \coordinate (A) at (0,0);
+        \coordinate (B) at (1.1,-1.5);
+        \coordinate (C) at (2.2,0);
+        \draw[-{Stealth},thick,blue!70!black] (-1.7,1.6) -- (A) node[pos=0.3, left, font=\small] {入射光};
+        \draw[-{Stealth},thick,red!70!black]  (A) -- (1.7,1.6) node[pos=0.42, right, font=\small] {光束 1};
+        \draw[thick,blue!70!black] (A) -- (B);
+        \draw[thick,blue!70!black] (B) -- (C);
+        \draw[-{Stealth},thick,red!70!black] (C) -- (3.42,1.14) node[pos=0.45, right, font=\small] {光束 2};
+        \draw[dashed,gray!80] (A) -- (0,1.2);
+        \draw[dashed,gray!80] (A) -- (0,-1.35);
+        \node[font=\small] at (-0.26,0.45) {$\theta_1$};
+        \node[font=\small] at (0.25,-0.8)  {$\theta_2$};
+        \node[font=\scriptsize, anchor=west] (li1) at (2.1,1.2) {界面 I（外延层上表面）};
+        \draw[gray!70,-{Stealth[length=3pt]}] (li1.south) -- (1.2,0.04);
+        \node[font=\scriptsize, anchor=west] (li2) at (1.95,-2.55) {界面 II（外延层/衬底）};
+        \draw[gray!70,-{Stealth[length=3pt]}] (li2.north) -- (1.35,-1.54);
+    \end{tikzpicture}
+    \caption{双光束干涉几何模型：光束 1 在界面 I 反射，光束 2 折入外延层（厚度 $d$）并在界面 II 反射后射出。}
+    \label{fig:geometry}
+\end{figure}
+
+\subsection{极值条件与厚度公式}
+
+当相位差的光程部分为 $\pi$ 的整数倍时出现干涉极值。记第 $j$ 个极值（峰谷交替）的波数为 $\sigma_j$，其干涉级数为
+\begin{equation}
+    m_j = m_0 + \frac{j}{2} = 2\,n_1(\sigma_j)\,d\,\sigma_j\cos\theta_2(\sigma_j).
+    \label{eq:series}
+\end{equation}
+若 $n_1$ 近似为常数，则相邻峰--峰（级数差 1）间距 $\Delta\sigma$ 给出经典公式
+\begin{equation}
+    d = \frac{1}{2\,n_1\cos\theta_2\,\Delta\sigma},
+    \label{eq:spacing}
+\end{equation}
+此即 ASTM F95 标准方法的解析核心\cite{astmf95}。
+
+\subsection{色散情形与群指数}
+
+当 $n_1(\sigma)$ 随波数变化时，对式~\eqref{eq:series} 求导可得相邻极值间距满足
+\begin{equation}
+    2\,n_g\,d\cos\theta_2\cdot\Delta\sigma \approx \frac{1}{2},
+    \qquad
+    n_g = n_1 + \sigma\,\frac{\mathrm{d}n_1}{\mathrm{d}\sigma},
+    \label{eq:group}
+\end{equation}
+即极值\textbf{间距}由群指数 $n_g$ 而非相速折射率 $n_1$ 决定，而极值\textbf{位置}的级数关系（式~\eqref{eq:series}）仍由 $n_1$ 决定。碳化硅在 $1200\text{--}3300\invcm$（剩余射线带上缘）色散强烈，该区别造成约 $10\%$ 的系统差异，必须在算法中显式处理。
+
+碳化硅外延层的色散采用 TO--LO 单振子模型\cite{spitzer1959,madan2024}：
+\begin{equation}
+    \varepsilon(\sigma) = \varepsilon_\infty\,
+    \frac{\sigma_{\mathrm{LO}}^2-\sigma^2-\mathrm{i}\gamma\sigma}
+         {\sigma_{\mathrm{TO}}^2-\sigma^2-\mathrm{i}\gamma\sigma},
+    \qquad n_1(\sigma)=\operatorname{Re}\sqrt{\varepsilon(\sigma)},
+    \label{eq:oscillator}
+\end{equation}
+其中 $\sigma_{\mathrm{TO}}=797.7\invcm$、$\sigma_{\mathrm{LO}}=992.1\invcm$ 取自椭偏测量文献\cite{madan2024}，轻掺杂外延层阻尼 $\gamma$ 取小值 $6\invcm$，高频介电常数 $\varepsilon_\infty$ 由数据反演确定。
+
+\section{问题二：碳化硅外延层厚度的计算}
+
+\subsection{数据预处理}
+
+原始光谱（图~\ref{fig:spectra}）在 $800\text{--}1000\invcm$ 为剩余射线带，反射率剧烈变化、干涉条纹被抑制，故主分析取 $\sigma\in[1200,3300]\invcm$（高波数端条纹幅值因去相干而衰减，不参与极值法）。对截取信号施加三阶 Savitzky--Golay 滤波（窗长 31）压制高频噪声，同时以长窗（301）SG 估计缓变本底用于极值显著性判别。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figs/fig_spectra_sic.png}
+    \caption{碳化硅晶圆片实测红外反射光谱（附件 1：$10^\circ$；附件 2：$15^\circ$）及 SG 滤波结果。}
+    \label{fig:spectra}
+\end{figure}
+
+\subsection{极值检测与交替剪枝}
+
+以 prominence 阈值 $0.35\%$ 与最小间隔 12 点检测波峰、波谷；随后对合并序列施加\textbf{交替剪枝}——若相邻两极值同为峰（或同为谷），仅保留偏离本底更显著者，从而强制峰谷交替、消除噪声伪极值。附件 1 检出 8 峰 9 谷、附件 2 检出 9 峰 8 谷（图~\ref{fig:extrema}），峰间距自低波数向高波数由约 $200\invcm$ 增至 $264\invcm$，呈显著啁啾，与 TO--LO 振子色散的预言一致。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figs/fig_extrema_sic.png}
+    \caption{附件 1（$10^\circ$）SG 滤波谱上的极值检测结果（$\sigma\in[1200,3300]\invcm$）。}
+    \label{fig:extrema}
+\end{figure}
+
+\subsection{TO--LO 振子色散下的级数标定算法}
+
+将式~\eqref{eq:series} 改写为线性回归形式。定义光学厚度坐标
+\begin{equation}
+    x_j = 2\,n_1(\sigma_j)\cos\theta_2(\sigma_j)\,\sigma_j \times 10^{-4},
+\end{equation}
+则 $m_j = d\cdot x_j$。给定色散模型（式~\eqref{eq:oscillator}），$x_j$ 可由 $\sigma_j$ 直接计算；级数 $m_j=m_0+j/2$ 由序号确定，故厚度即线性回归斜率。算法流程如下（图~\ref{fig:flow}）：
+
+\begin{enumerate}[label=（\arabic*）, leftmargin=2.4em, itemsep=0.1em]
+    \item 对候选 $\varepsilon_\infty\in[6.3,6.9]$（对应 $n$ 平台值 $2.51\text{--}2.63$，覆盖文献值 $2.55$\cite{wang2013}）作栅格扫描；
+    \item 对每个 $\varepsilon_\infty$：由首末极值估计级数偏移 $m_0$ 并取半整数栅格，作 $m_j$ 对 $x_j$ 的最小二乘回归；
+    \item 取回归优度 $R^2$ 最高的 $\varepsilon_\infty$，其斜率即厚度，截距给出级数偏移 $m_0$。
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        box/.style={draw, rounded corners=2pt, text width=2.35cm, minimum height=0.75cm,
+                    align=center, font=\small\sffamily, fill=blue!6, inner sep=2.5pt},
+        arr/.style={-{Stealth[length=4pt]}, thick, gray!70}]
+        \node[box] (a) {原始光谱\\截取与 SG 滤波};
+        \node[box, right=0.45cm of a] (b) {极值检测\\交替剪枝};
+        \node[box, right=0.45cm of b] (c) {TO--LO 色散\\$\varepsilon_\infty$ 栅格扫描};
+        \node[box, right=0.45cm of c] (d) {级数标定\\线性回归求 $d$};
+        \node[box, right=0.45cm of d] (e) {双角度互证\\Bootstrap 区间};
+        \draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d); \draw[arr] (d)--(e);
+    \end{tikzpicture}
+    \caption{问题二反演算法流程。}
+    \label{fig:flow}
+\end{figure}
+
+该算法把厚度反演化为线性回归，无需迭代初值，从根上避免了非线性拟合陷入局部极小的风险；色散引起的条纹啁啾由物理色散模型吸收，回归残差直接反映模型失配程度。扫描得到 $\varepsilon_\infty=6.90$，对应折射率 $n_1\in[1.98,\,2.58]$（$1200\to3300\invcm$，图~\ref{fig:dispersion}），低波数端折射率下降正是剩余射线带尾缘色散的物理表现。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.78\textwidth]{figs/fig_dispersion_sic.png}
+    \caption{由级数回归反演的碳化硅外延层折射率色散曲线（TO--LO 单振子，$\varepsilon_\infty=6.90$）。}
+    \label{fig:dispersion}
+\end{figure}
+
+\subsection{计算结果与交叉验证}
+
+三种相互独立的方法结果汇总于表~\ref{tab:sicresults}：级数标定线性回归（主方法）、色散校正 FFT 频谱法（在 $\xi=2n(\sigma)\cos\theta_2\,\sigma$ 坐标下条纹严格周期化，主瓣频率即厚度）、群指数逐对法（式~\eqref{eq:group}）。三种方法结果彼此吻合：主方法（级数标定）在两角度间偏差仅 $0.5\%$，与色散校正 FFT 法逐角度互差为 $1.9\%$ 与 $2.6\%$；群指数逐对法自身两角度偏差为 $4.3\%$（表~\ref{tab:sicresults} 一致性列），在附件 2 上与主方法互差约 $4.8\%$（$0.34\um$），仍落在其逐对不确定度（$\pm1.57\um$）范围之内。
+
+\begin{table}[htbp]
+    \centering
+    \caption{碳化硅外延层厚度：三种方法与两角度结果汇总（单位：$\mu$m）}
+    \label{tab:sicresults}
+    \small
+    \begin{tabular}{lccc}
+        \toprule
+        方法 & 附件 1（$10^\circ$） & 附件 2（$15^\circ$） & 一致性 \\
+        \midrule
+        级数标定线性回归（主） & $7.202$（$R^2=0.9998$） & $7.165$（$R^2=0.9995$） & 偏差 $0.5\%$ \\
+        色散校正 FFT 法 & $7.336$ & $7.351$ & 偏差 $0.2\%$ \\
+        群指数逐对法 & $7.195\pm0.412$ & $7.507\pm1.573$ & 偏差 $4.3\%$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+以逐对厚度样本的标准差为权，对两角度级数回归结果作逆方差加权合并：
+\begin{equation}
+    \bar d=\frac{\sum_k w_k d_k}{\sum_k w_k},\quad w_k=1/s_k^2
+    \;\Rightarrow\;
+    \bar d = 7.20\pm0.40\um,
+    \label{eq:combine}
+\end{equation}
+95\% 置信区间 $[6.42,\,7.98]\um$。逐对厚度的 Bootstrap 重抽样（2000 次）给出两角度均值的 95\% 区间分别为 $[6.98,7.39]\um$ 与 $[6.80,8.30]\um$（图~\ref{fig:hist}），区间高度重叠，两角度无显著系统差异。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figs/fig_d_hist_sic.png}
+    \caption{由相邻极值对反演的逐对厚度分布（两入射角）。}
+    \label{fig:hist}
+\end{figure}
+
+\subsection{可靠性分析}
+
+可靠性从四个维度评估，详见第~\ref{sec:sens}~节：折射率扰动 $\pm1\%$ 引起厚度 $-0.995\%/+1.015\%$ 变化（传递系数约 $-1$）；入射角 $\pm0.5^\circ$ 仅引起 $\mp0.02\%$ 变化；$0.3\%$ 反射率噪声的蒙特卡洛实验给出中位数 $7.54\um$、稳健标准差 $0.48\um$；两角度独立反演偏差 $0.5\%$。综合判断，碳化硅厚度结果为 $d=7.20\um$ 量级，方法间系统离散约 $2\%\text{--}3\%$，主要来源为色散模型形式的选择。
+
+\section{问题三：多光束干涉与硅外延层厚度}
+
+\subsection{多光束干涉的必要条件}
+
+计入界面间多次往返后，总反射系数由 Airy 公式给出\cite{born1999}：
+\begin{equation}
+    r = \frac{r_{01}+r_{12}\,\mathrm{e}^{\mathrm{i}\delta}}{1+r_{01}r_{12}\,\mathrm{e}^{\mathrm{i}\delta}},
+    \qquad
+    \delta = 4\pi n_1 d\,\sigma\cos\theta_2,
+    \label{eq:airy}
+\end{equation}
+非偏振光反射率取 s、p 偏振平均 $R=\tfrac12(|r_s|^2+|r_p|^2)$。双光束模型是 $|r_{01}r_{12}|\ll1$ 时的一阶近似。由式~\eqref{eq:airy}，多光束干涉显著出现需同时满足四个必要条件：
+\begin{enumerate}[label=（\arabic*）, leftmargin=2.4em, itemsep=0.1em]
+    \item \textbf{界面反射率条件}：$|r_{01}r_{12}|$ 不可忽略，即外延层与衬底折射率差足够大——掺杂差造成的折射率对比是根本驱动；
+    \item \textbf{相干性条件}：光源相干长度大于层内往返光程 $2n_1d\cos\theta_2$，即 FTIR 的分辨率须足够高，否则高阶反射光束非相干叠加；
+    \item \textbf{低吸收条件}：外延层内吸收系数低，使多次往返的光不被衰减殆尽；
+    \item \textbf{几何条件}：表面与界面平整、平行，保持各束光的空间相干性。
+\end{enumerate}
+
+\subsection{硅片多光束干涉的判定}
+
+对附件 3、4 的分析给出三重证据。其一，低波数段条纹可见度 $V=(R_{\max}-R_{\min})/(R_{\max}+R_{\min})$ 高达 $0.527/0.521$，远超双光束弱反射界面的预期；其二，条纹幅值随波数强烈衰减（从约 $44\%$ 降至 $2\%$），且线型明显偏离余弦形式（图~\ref{fig:sifit}），提示多次往返光束与去相干效应共同作用；其三，重掺杂衬底的 Drude 响应使其与外延层折射率差显著增大，满足条件（1）。故判定硅片发生了多光束干涉，须采用 Airy 模型。
+
+\subsection{Drude--Airy 模型与联合反演算法}
+
+外延层（轻掺杂）折射率取 $n_1=3.42$（红外平台值，含微小二次色散项）；重掺杂衬底介电函数为
+\begin{equation}
+    \varepsilon_s(\sigma) = \varepsilon_\infty^{(s)} - \frac{\sigma_p^2}{\sigma^2+\mathrm{i}\gamma_s\sigma},
+    \qquad n_2(\sigma)=\sqrt{\varepsilon_s(\sigma)},
+    \label{eq:drude}
+\end{equation}
+其中 $\sigma_p=(2\pi c)^{-1}\sqrt{N e^2/(\varepsilon_0 m^*)}$ 由载流子浓度决定\cite{spitzer1957}。考虑仪器分辨率与光束发散导致的去相干，对往返相位项施加包络 $D(\sigma)=\exp[-(\sigma/\sigma_d)^2]$。反射率模型为
+\begin{equation}
+    R(\sigma) = \frac12\left(\left|\frac{r_{01,s}+D\,r_{12,s}\mathrm{e}^{\mathrm{i}\delta}}{1+D\,r_{01,s}r_{12,s}\mathrm{e}^{\mathrm{i}\delta}}\right|^2
+    +\left|\frac{r_{01,p}+D\,r_{12,p}\mathrm{e}^{\mathrm{i}\delta}}{1+D\,r_{01,p}r_{12,p}\mathrm{e}^{\mathrm{i}\delta}}\right|^2\right).
+    \label{eq:fullmodel}
+\end{equation}
+反演参数为 $\boldsymbol\theta=(d,\varepsilon_\infty^{(s)},\sigma_p,\gamma_s,B,\sigma_d)$（$n_1$ 固定为文献值以与极值法可比），目标函数为两角度光谱残差的平方和，并按假设 5 对每个角度 profile 掉线性定标因子。采用\textbf{差分进化全局搜索}（种群 24、60 代）定位全局盆地，再以 TRF 信任域法局部精修。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figs/fig_si_fit.png}
+    \caption{附件 3（$10^\circ$）实测谱与多光束 Airy 拟合、双光束拟合的对比。}
+    \label{fig:sifit}
+\end{figure}
+
+\subsection{计算结果与多光束效应的定量确认}
+
+拟合结果（表~\ref{tab:siparams}）：多光束 Airy 模型取得 $R^2=0.9969/0.9977$（两角度），厚度 $d=3.414\um$；拟合衬底参数 $\varepsilon_\infty^{(s)}=12.82$（与硅本征值 $11.7$ 接近）、$\sigma_p=4010\invcm$、$\gamma_s=404\invcm$，对应重掺杂特征。作为对照，双光束模型（同参数框架）$R^2$ 仅 $0.951/0.954$——它无法重现条纹的幅值衰减与非对称线型（图~\ref{fig:sires}），证实多光束效应对硅片显著。
+
+\begin{table}[htbp]
+    \centering
+    \caption{硅外延层：多光束与双光束模型拟合结果对比}
+    \label{tab:siparams}
+    \small
+    \begin{tabular}{lcc}
+        \toprule
+        参数 & 多光束 Airy 模型 & 双光束模型 \\
+        \midrule
+        厚度 $d$ ($\mu$m) & $\mathbf{3.414}$ & $3.431$ \\
+        $R^2$（附件 3，$10^\circ$） & $\mathbf{0.9969}$ & $0.9509$ \\
+        $R^2$（附件 4，$15^\circ$） & $\mathbf{0.9977}$ & $0.9539$ \\
+        $\varepsilon_\infty^{(s)}$ & $12.82$ & $10.9$ \\
+        $\sigma_p$ (cm$^{-1}$) & $4010$ & $3160$ \\
+        $\gamma_s$ (cm$^{-1}$) & $404$ & $297$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+在 $\sigma=2000\invcm$ 处，模型给出界面反射系数 $|r_{01}|=0.553$、$|r_{12}|=0.070$，Airy 精细系数 $F=4|r_{01}r_{12}|/(1-|r_{01}r_{12}|)^2=0.168$，即二次反射光强可达一次反射的 $F$ 量级份额——多光束效应处于可测量水平，与高可见度 $V=0.52$ 的观测互相印证。极值点解析法（$n_1=3.42$ 级数标定，与问题二同构）给出 $3.512/3.475\um$（$R^2=0.9994$），与全谱拟合一致。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figs/fig_residual_si.png}
+    \caption{附件 3 拟合残差对比：多光束模型残差显著小于双光束模型。}
+    \label{fig:sires}
+\end{figure}
+
+\subsection{碳化硅的复核与多光束影响的消除}
+
+将同一判据用于碳化硅：重掺杂 4H-SiC 衬底的 Drude 位移使 $n_2$ 相对外延层仅低约 $0.5\%$，由此 $|r_{12}|\approx0.0025$，仅为硅体系（$0.070$）的 $1/28$。以 $\delta n/n=-0.5\%$ 的衬底参数对附件 1、2 作 Airy 全谱复核，多光束项造成的厚度偏移仅 $+0.10\%$，且拟合优度无改善（MSE $0.265$ vs 双光束 $0.250$）。因此\textbf{碳化硅体系的多光束干涉可以忽略}，问题二采用的双光束（级数标定）模型是充分的；按题意``消除影响''后的厚度结果与问题二一致，即 $7.20\um$。两体系的差异根源在于掺杂对比度：硅片为重掺杂衬底上的轻掺杂外延层（折射率差大），而同质碳化硅外延/衬底的折射率差极小。
+
+\section{灵敏度与稳健性检验}\label{sec:sens}
+
+\subsection{参数灵敏度}
+对厚度公式 $d\propto 1/(n_g\cos\theta_2)$ 作扰动分析（表~\ref{tab:sens}）：折射率相对误差以约 $-1$ 的系数传递至厚度，是首要误差源，故色散模型的选取至关重要；入射角误差的影响经 $\cos\theta_2$ 缓冲后可忽略（$0.5^\circ$ 仅 $0.02\%$）。这一敏感性结构提示：多角度测量互证是暴露折射率系统误差的有效手段——本文两角度偏差 $0.5\%$ 即为此提供了实证。
+
+\begin{table}[htbp]
+    \centering
+    \caption{碳化硅厚度对关键参数的灵敏度（附件 1，$10^\circ$）}
+    \label{tab:sens}
+    \small
+    \begin{tabular}{lcc}
+        \toprule
+        扰动 & 厚度变化 & 传递系数 \\
+        \midrule
+        $n_1+1\%$ & $-0.995\%$ & $-0.995$ \\
+        $n_1-1\%$ & $+1.015\%$ & $-1.015$ \\
+        $\theta_1+0.5^\circ$ & $+0.024\%$ & $+0.048\%\,/\,(0.1^\circ)$ \\
+        $\theta_1-0.5^\circ$ & $-0.023\%$ & $-0.046\%\,/\,(0.1^\circ)$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{噪声稳健性（蒙特卡洛）}
+向附件 1 光谱注入标准差 $0.3\%$ 的高斯噪声，重复``滤波--检测--级数回归''全流程 30 次：厚度中位数 $7.54\um$、稳健标准差（MAD）$0.48\um$（图~\ref{fig:mc}）。结果表明噪声主要通过极值定位误差影响厚度，标准差约 $6\%$，与极值间隔内插精度一致；级数回归的线性结构使该误差不随迭代放大。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{figs/fig_mc.png}
+    \caption{蒙特卡洛噪声实验（$0.3\%$ 反射率噪声，30 次）的反演厚度分布。}
+    \label{fig:mc}
+\end{figure}
+
+\section{模型评价与推广}
+
+\subsection{模型的优点}
+\begin{enumerate}[label=（\arabic*）, leftmargin=2.4em, itemsep=0.1em]
+    \item \textbf{物理自洽}：色散采用 TO--LO 单振子与 Drude 模型，声子参数取自椭偏文献，剩余射线带的剔除与条纹啁啾均获得物理解释，避免纯经验色散的外推风险；
+    \item \textbf{算法鲁棒}：级数标定将厚度反演线性化，无初值依赖、无局部极小；交替剪枝与 MAD 剔离群保障了极值序列的整洁；
+    \item \textbf{群指数修正}：显式区分相速折射率与群指数在极值间距中的不同作用，修正了色散介质中约 $10\%$ 的系统偏差；
+    \item \textbf{结论闭环}：以 $|r_{12}|$ 的量级对比（$0.0025$ vs $0.070$）统一解释了``碳化硅可忽略、硅必须建模''的现象，判定、建模与复核逻辑自洽。
+\end{enumerate}
+
+\subsection{模型的不足与改进方向}
+\begin{enumerate}[label=（\arabic*）, leftmargin=2.4em, itemsep=0.1em]
+    \item 碳化硅高波数端（$\sigma>3300\invcm$）条纹因去相干衰减，仅以指数包络近似，未显式建模厚度不均匀性（楔角）导致的空间去相干；改进方向是引入 $d$ 的空间分布函数作联合反演；
+    \item TO--LO 单振子仅含主声子模，4H-SiC 的折叠声子模会引入附加色散，可用多振子 Sellmeier 形式进一步压缩方法间离散；
+    \item 硅拟合中仪器定标以线性冗余参数消除，若能获取仪器绝对定标，可进一步以绝对反射率约束折射率绝对量级。
+\end{enumerate}
+
+\subsection{模型推广}
+本框架（物理色散 $+$ 级数标定 $+$ Airy 全谱拟合 $+$ 双角度互证）可直接推广至 GaN、GaAs 等其他半导体外延体系的厚度测量，以及多层结构的逐层反演；结合在线 FTIR，可用于外延生长的实时闭环控制。
+
+\begin{thebibliography}{99}
+    \raggedright
+    \setlength{\itemsep}{0.15em}
+    \small
+    \phantomsection
+    \addcontentsline{toc}{section}{参考文献}
+
+    \bibitem{cumcm2025} 全国大学生数学建模竞赛组委会. 2025年高教社杯全国大学生数学建模竞赛赛题：B题 碳化硅外延层厚度的确定[EB/OL]. (2025-09-04)[2026-09-05]. \url{https://www.mcm.edu.cn/}.
+
+    \bibitem{macmillan1998} MACMILLAN M F, HENRY A, JANZÉN E. Thickness determination of low doped SiC epi-films on highly doped SiC substrates[J]. Journal of Electronic Materials, 1998, 27(4): 300-303. DOI: 10.1007/s11664-998-0404-9.
+
+    \bibitem{tang2009} TANG X, ZHANG Y, LI Z, et al. Thickness determination of 4H-SiC epitaxial films by infrared reflectance[C]//2009 IEEE International Conference of Electron Devices and Solid-State Circuits (EDSSC). Xi'an: IEEE, 2009: 295-297. DOI: 10.1109/EDSSC.2009.5394259.
+
+    \bibitem{astmf95} ASTM International. Standard test method for thickness of lightly doped silicon epitaxial layers on heavily doped silicon substrates using an infrared dispersive spectrophotometer: ASTM F95—89(2000)[S]. West Conshohocken: ASTM International, 2000.
+
+    \bibitem{spitzer1959} SPITZER W G, KLEINMAN D, WALSH D. Infrared properties of hexagonal silicon carbide[J]. Physical Review, 1959, 113(1): 127-132. DOI: 10.1103/PhysRev.113.127.
+
+    \bibitem{spitzer1957} SPITZER W G, FAN H Y. Determination of optical constants and carrier effective mass of semiconductors[J]. Physical Review, 1957, 106(5): 882-890. DOI: 10.1103/PhysRev.106.882.
+
+    \bibitem{wang2013} WANG S, ZHAN M, WANG G, et al. 4H-SiC: a new nonlinear material for midinfrared lasers[J]. Laser \& Photonics Reviews, 2013, 7(5): 831-838. DOI: 10.1002/lpor.201300068.
+
+    \bibitem{madan2024} MADAN K M, DULAL P, SHRESTHA B, et al. Optical properties of 4H-SiC and 6H-SiC from infrared to vacuum ultraviolet spectral range ellipsometry (0.05--8.5 eV)[J]. Surface Science Spectra, 2024, 31(2): 026003. DOI: 10.1116/6.0003676.
+
+    \bibitem{tong2018} TONG Z, LIU L, LI L, et al. Temperature-dependent infrared optical properties of 3C-, 4H- and 6H-SiC[J]. Physica B: Condensed Matter, 2018, 537: 194-201. DOI: 10.1016/j.physb.2018.02.023.
+
+    \bibitem{li2026} LI Z, LI J, YANG H, et al. Phase-resolved determination of SiC epitaxial layer thickness from FTIR reflectance interference spectra[J]. Microelectronics Reliability, 2026, 185: 116263. DOI: 10.1016/j.microrel.2026.116263.
+
+    \bibitem{liu2026} LIU Z, CHEN J, LUO Y. Measurement of epitaxial layer thickness based on infrared interference method[C]//Proc. SPIE 14261: Fifth International Conference on Machine Vision, Automatic Identification, and Detection (MVAID 2026). Bellingham: SPIE, 2026: 25. DOI: 10.1117/12.3119640.
+
+    \bibitem{born1999} BORN M, WOLF E. Principles of Optics: Electromagnetic Theory of Propagation, Interference and Diffraction of Light[M]. 7th ed. Cambridge: Cambridge University Press, 1999.
+
+    \bibitem{yeh1988} YEH P. Optical Waves in Layered Media[M]. New York: John Wiley \& Sons, 1988.
+
+    \bibitem{you2003} 游璞, 于国萍. 光学[M]. 北京: 高等教育出版社, 2003.
+
+    \bibitem{jiebro2025} jiebro0721. cumcm-2025b-sic-epitaxy: 2025年高教社杯全国大学生数学建模竞赛B题碳化硅外延层厚度的确定——建模、算法、求解与解题文档[EB/OL]. (2026-08-19)[2026-09-05]. \url{https://github.com/jiebro0721/cumcm-2025b-sic-epitaxy}.
+
+    \bibitem{schrodinger2026} SchrodingerJia. SiC\_Thickness\_Analysis: 基于极值分析的红外干涉法测量碳化硅外延层厚度[EB/OL]. (2026-04-01)[2026-09-05]. \url{https://github.com/SchrodingerJia/SiC_Thickness_Analysis}.
+
+    \bibitem{skyler2026} Skyler-Luo. CUMCM2025-B: 基于Drude-Sellmeier模型的碳化硅外延层厚度的反演算法[EB/OL]. (2026-06-27)[2026-09-05]. \url{https://github.com/Skyler-Luo/CUMCM2025-B}.
+
+    \bibitem{linjk2026} LinJK1. sic-epitaxial-thickness-inversion: 基于LM-GA混合优化算法的碳化硅外延层厚度全光谱反演模型[EB/OL]. (2026-08-19)[2026-09-05]. \url{https://github.com/LinJK1/sic-epitaxial-thickness-inversion}.
+
+    \bibitem{fwsy2026} FWSY0623. SiC-Epitaxial-Thickness-Measurement-via-IR-Interference: 碳化硅外延层厚度红外干涉测量[EB/OL]. (2026-04-29)[2026-09-05]. \url{https://github.com/FWSY0623/SiC-Epitaxial-Thickness-Measurement-via-IR-Interference}.
+
+\end{thebibliography}
+
+\newpage
+\appendix
+\section{附录：Python 关键代码}
+
+\subsection{级数标定线性回归（问题二核心算法）}
+\begin{lstlisting}
+def series_fit(sig_e, theta1, nfun):
+    # sig_e: 峰谷交替极值波数序列; nfun: 色散模型 n(sigma)
+    x = 2.0 * nfun(sig_e) * cos_t2(sig_e, theta1, nfun) * sig_e * 1e-4
+    N = len(x)
+    slope0 = 0.5 * (N - 1) / max(x[-1] - x[0], 1e-12)
+    m0 = 0.5 * np.arange(N) - slope0 * x
+    m0 = float(np.round(np.median(m0) * 2) / 2)   # 半整数栅格
+    m = m0 + 0.5 * np.arange(N)
+    A = np.column_stack([x, np.ones(N)])
+    coef, *_ = np.linalg.lstsq(A, m, rcond=None)  # 斜率即厚度 d (um)
+    return float(coef[0]), float(m0)
+
+def scan_sic_series(sig_e, theta1, eps_grid):
+    # eps_grid: TO-LO 振子高频介电常数候选网格
+    best = None
+    for eps in eps_grid:
+        nfun = sic_n_factory(eps)   # n = Re sqrt(eps_inf*(sLO^2-s^2-i*gam*s)/(sTO^2-s^2-i*gam*s))
+        d, m0, r2, rms = series_fit(sig_e, theta1, nfun)
+        if best is None or r2 > best["R2"]:
+            best = dict(d_um=d, m0=m0, R2=r2, eps_inf=eps)
+    return best
+\end{lstlisting}
+
+\subsection{多光束 Airy 反射率模型与联合拟合（问题三）}
+\begin{lstlisting}
+def R_model(sigma, d_um, n_epi, n_sub, theta1_deg, deco=1.0, two_beam=False):
+    d  = d_um * 1e-4                       # um -> cm
+    n1 = np.asarray(n_epi(sigma), complex)
+    n2 = np.asarray(n_sub(sigma), complex) # Drude: sqrt(eps_inf - sp^2/(s^2+i*g*s))
+    s  = np.sin(np.radians(theta1_deg)); c1 = np.cos(np.radians(theta1_deg))
+    c2 = np.sqrt(1.0 - (s/n1)**2 + 0j); c3 = np.sqrt(1.0 - (s/n2)**2 + 0j)
+    r01s = (c1 - n1*c2)/(c1 + n1*c2);  r01p = (n1*c1 - c2)/(n1*c1 + c2)
+    r12s = (n1*c2 - n2*c3)/(n1*c2 + n2*c3)
+    r12p = (n2*c2 - n1*c3)/(n2*c2 + n1*c3)
+    e = np.exp(1j * 4.0*np.pi*n1*d*sigma*c2)
+    out = []
+    for r01, r12 in [(r01s, r12s), (r01p, r12p)]:
+        if two_beam:
+            r = r01 + deco*r12*e                       # 双光束近似
+        else:
+            r = (r01 + deco*r12*e)/(1.0 + deco*r01*r12*e)  # Airy 多光束
+        out.append(np.abs(r)**2)
+    return 50.0*(out[0] + out[1])          # 非偏振: s/p 平均
+
+# 差分进化全局搜索 + TRF 局部精修（两角度联合，线性定标冗余参数已 profile）
+de  = differential_evolution(cost, bounds, seed=1, maxiter=60,
+                             popsize=24, tol=1e-10, polish=False, x0=p0)
+sol = least_squares(lambda p: nuis_residual(si_residual(p, ds, False), ds),
+                    de.x, method="trf", bounds=bounds)
+\end{lstlisting}
+
+\end{document}
